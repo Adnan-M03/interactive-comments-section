@@ -15,9 +15,13 @@ button{
 }
 .replies-container{
     margin-left: 5rem;
-        & :nth-child(3){
-            color: red;
-        }
+    & .you{
+        background-color: hsl(238, 40%, 52%);
+        color: hsl(0, 0%, 100%);
+    }
+    & .comment-para>b{
+        color: red;
+    }
 }
 .vote-container{
     display: inline-flex;
@@ -30,5 +34,5 @@ button{
 .user-date{
     display: flex;
     justify-content: space-around;
-        
+    align-items: center;
 }
