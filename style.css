@@ -1,7 +1,7 @@
-/* *{
+ *{
     margin: 0;
     padding: 0;
-} */
+} 
  body{
     background-color: hsl(223, 19%, 93%);
   & div{
@@ -35,4 +35,18 @@ button{
     display: flex;
     justify-content: space-around;
     align-items: center;
+}
+.modal{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+#overlay{
+    position: fixed;
+    width: 100vw;
+    height: 100%;
+    background-color: hsla(0, 0%, 0%, 0.438);
+    margin: 0;
+    border-radius:0 ;
 }
