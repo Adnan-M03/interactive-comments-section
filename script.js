@@ -2,8 +2,9 @@ const fetchfiles = fetch('data.json');
 const body = document.querySelector('body');
 const para = document.getElementById('');
 const overlay = document.createElement('div');
-overlay.setAttribute('id', 'overlay')
+overlay.setAttribute('id', 'overlay');
 
+let count = 4;
 let scorePara;
 let datas;
 //let comments;
@@ -71,7 +72,7 @@ function comms(data){
                     //if(objects.user.username !== 'juliusomo'){}else{}
                     if(objects.user.username !== 'juliusomo'){
                         content += 
-                        `<div class="replies-container" data-id = "${objects.id}">
+                        `<div class="replies-container" data-reply-id = "${objects.id}">
                             <span class="user-date">
                                 <img src="${objects.user.image.png}" alt="">
                                 <p>${objects.user.username}</p>
@@ -94,7 +95,7 @@ function comms(data){
                         </div>`
                     }else{
                         content += 
-                        `<div class="replies-container" data-id = "${objects.id}">
+                        `<div class="replies-container" data-reply-id = "${objects.id}">
                             <span class="user-date">
                                 <img src="${objects.user.image.png}" alt="">
                                 <p>${objects.user.username}</p>
@@ -178,8 +179,11 @@ function update(){
     const editBtns = document.querySelectorAll('.edit-btn');
     const sendBtn = document.querySelector('.current-user-btn');
     console.log(sendBtn)
-    let count = 4;
 
+
+
+
+                        //  THE SEND BUTTON
     sendBtn.addEventListener('click', ()=>{
         let input = document.querySelector('.current-user-input');
         let value = input.value;
@@ -330,67 +334,76 @@ function update(){
                         //  THE REPLY BUTTON
     replyBtns.forEach(replyBtn =>{
         replyBtn.addEventListener('click', ()=>{
-            let dataId = replyBtn.getAttribute('data-id');
-            let person = datas.comments.find(item => item.id == dataId);//The object where i twick its data
-            let user;
-            let personTwo;
-            let parent = replyBtn.parentElement; 
-            if(person == undefined){
-                for(comments of datas.comments){
-                    person = comments;
-                    for(replies of comments.replies){
-                        if(replies.id == dataId){
-                            personTwo = replies;
+            let parent = replyBtn.parentElement;
+            const clickedReply = parent.querySelector('.current-user-reply');
+            if(!clickedReply){
+                let dataId = replyBtn.getAttribute('data-id');
+                let person = datas.comments.find(item => item.id == dataId);//The object where i twick its data
+                let user;
+                let personTwo;
+
+                if(person == undefined){
+                    for(comments of datas.comments){
+                        const replyExists = comments.replies.some(reply => reply.id === dataId);// Here we have to somehow find something that relates with parent and child
+                        if (replyExists) {
+                            person = comments; // Return the parent comment
+                            console.log(comments);
+                        }
+                        for(replies of comments.replies){
+                            if(replies.id == dataId){
+                                personTwo = replies;
+                            }
                         }
                     }
+                // --commented for myself-- The user must be the one i am replying to regardless of were the reply is saved
+                    user = personTwo.user.username;
+                }else{
+                    user = person.user.username;
                 }
+                
+                let content = 
+                `<div class="current-user-reply">
+                    <img src="${datas.currentUser.user.image.png}" alt="" class="current-user-img">
+                    <input class="current-user-input" placeholder="Reply"></input>
+                    <input class="current-user-btn" value="REPLY" type="submit"></input>
+                </div>`;
+                let div = document.createElement('div');
+                div.innerHTML = content;
+                parent.appendChild(div);
+                let me = parent.querySelector('.current-user-btn');
+                let input = parent.querySelector('.current-user-input');
+                input.focus();
+                me.addEventListener('click', ()=>{
+                    count += 1;
+                    console.log(count);
+                    parent = replyBtn.parentElement; 
+                    parent.removeChild(div);
+                    let value = input.value;
+                    // Class for creating the new object/new reply
+                    class people{
+                        constructor(content,createdAt,score,replyingTo,id){
+                            this.content = content;
+                            this.createdAt = createdAt;
+                            this.score = score;
+                            this.replyingTo = replyingTo;
+                            this.id = id;
+                        }
+                        user = {
+                            image: {
+                                png: "./images/avatars/image-juliusomo.png",
+                                webp: "./images/avatars/image-juliusomo.webp"
+                            },
+                            username: "juliusomo"
+                        }
+                    }
 
-        // --commented for myself-- The user must be the one i am replying to regardless of were the reply is saved
-                user = personTwo.user.username;
-            }else{
-                user = person.user.username;
+                    let commentDate = new Date();
+                    let replier = Object.assign({}, new people(`${value}`,timeAgo(commentDate),0,user,count));
+                    console.log(replier);
+                    person.replies.push(replier);
+                    comms(datas);
+                })
             }
-            
-            let content = 
-            `<div class="current-user-reply">
-                <img src="${datas.currentUser.user.image.png}" alt="" class="current-user-img">
-                <input class="current-user-input" placeholder="Reply"></input>
-                <input class="current-user-btn" value="REPLY" type="submit"></input>
-            </div>`;
-            let div = document.createElement('div');
-            div.innerHTML = content;
-            parent.appendChild(div);
-            let me = parent.querySelector('.current-user-btn');
-            let input = parent.querySelector('.current-user-input');
-            input.focus();
-            me.addEventListener('click', ()=>{
-                count += 1;
-                parent = replyBtn.parentElement; 
-                parent.removeChild(div);
-                let value = input.value;
-                class people{
-                    constructor(content,createdAt,score,replyingTo,id){
-                        this.content = content;
-                        this.createdAt = createdAt;
-                        this.score = score;
-                        this.replyingTo = replyingTo;
-                        this.id = id;
-                    }
-                    user = {
-                        image: {
-                            png: "./images/avatars/image-juliusomo.png",
-                            webp: "./images/avatars/image-juliusomo.webp"
-                        },
-                        username: "juliusomo"
-                    }
-                }
-                let commentDate = new Date();
-                let replier = Object.assign({}, new people(`${value}`,timeAgo(commentDate),0,user,count));
-                console.log(replier);
-                person.replies.push(replier);
-                comms(datas);
-            })
-            
         })
     })
 
