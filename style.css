@@ -1,31 +1,64 @@
+ @font-face {
+    font-family: 'vRubik';
+    src: url(Font/Rubik-VariableFont_wght.ttf);
+ }
+ @font-face {
+    font-family: iRubik;
+    src: url(Font/Rubik-Italic-VariableFont_wght.ttf);
+ }
  *{
     margin: 0;
     padding: 0;
+    font-family: 'vRubik';
 }
  body{
     background-color: hsl(223, 19%, 93%);
     height: fit-content;
     padding: 0.1px;
-    
-  & .comment-container{
-    background-color: hsl(0, 0%, 100%);
-    border-radius: 10px;
-    margin: 1rem;
-        & .you {
-            background-color: hsl(238, 40%, 52%);
-            color: hsl(0, 0%, 100%);
-        }
-    }
+    font-family: 'vRubik';
 }
 button{
     cursor: pointer;
 }
-.replies-container{
+
+.comment-container{
+    position: relative;
+    background-color: hsl(0, 0%, 100%);
     border-radius: 10px;
     margin: 1rem;
-    margin-left: 5rem;
+    padding: 1rem;
+    display: grid;
+    grid-template-areas:
+    "user-date user-date"
+    "comment-para comment-para"
+    "vote-container reply-btn";
+        & .you {
+            background-color: hsl(238, 40%, 52%);
+            color: hsl(0, 0%, 100%);
+        }
+        & .comment-para{
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        & .reply-btn{
+            grid-area: reply-btn;
+            width: 4rem;
+            justify-self: right;
+        }
+    }
+
+.replies-container{
+    position: relative;
+    border-radius: 10px;
+    margin: 1rem;
+    padding: 1rem;
+    margin-left: 3rem;
     background-color: hsl(0, 0%, 100%);
-    
+    display: grid;
+    grid-template-areas:
+    "user-date user-date"
+    "comment-para comment-para"
+    "vote-container reply-btn";
     & .you{
         background-color: hsl(238, 40%, 52%);
         color: hsl(0, 0%, 100%);
@@ -34,18 +67,43 @@ button{
         color: red;
     }
 }
+
 .vote-container{
     display: inline-flex;
     background-color: hsl(228, 33%, 97%);
+    grid-area:vote-container;
+    width: 50%;
+    justify-content: space-between;
         & button{
             background: none;
             border:none;
         }
+        &~div{
+            display: inline;
+            grid-area:reply-btn
+        }
 }
 .user-date{
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
     align-items: center;
+    margin-bottom: 1rem;
+    grid-area:user-date;
+        & img{
+            width: 2.5rem
+        }
+        &p{
+            font-weight: 700;
+        }
+       
+}
+.comment-para{
+    grid-area:comment-para;
+}
+
+.current-user-reply{
+    position: relative;
+    top: 5rem;
 }
 .modal{
     background-color: hsl(0, 0%, 100%);
@@ -56,9 +114,7 @@ button{
 }
 #overlay{
     position: fixed;
-    width: 100vw;
+    width: 100%;
     height: 100%;
     background-color: hsla(0, 0%, 0%, 0.438);
-    margin: 0;
-    border-radius:0 ;
 }

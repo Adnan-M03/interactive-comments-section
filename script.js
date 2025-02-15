@@ -57,14 +57,16 @@ function comms(data){
                             <img src="images/icon-minus.svg" alt="" >
                         </button>
                     </div>
-                    <button class="delete-btn" data-id = "${obj.id}">
-                        <img src="images/icon-delete.svg" alt="">
-                        Delete
-                    </button>
-                    <button class="edit-btn" data-id = "${obj.id}">
-                        <img src="images/icon-edit.svg" alt="">
-                        Edit
-                    </button>
+                    <div>
+                        <button class="delete-btn" data-id = "${obj.id}">
+                            <img src="images/icon-delete.svg" alt="">
+                            Delete
+                        </button>
+                        <button class="edit-btn" data-id = "${obj.id}">
+                            <img src="images/icon-edit.svg" alt="">
+                            Edit
+                        </button>
+                    </div>
                 </div>`
         }
             if(obj.replies[0] !== undefined){
@@ -112,6 +114,7 @@ function comms(data){
                                     <img src="images/icon-minus.svg" alt="" >
                                 </button>
                             </div>
+                            <div>
                             <button class="delete-btn" data-id = "${objects.id}">
                                 <img src="images/icon-delete.svg" alt="">
                                 Delete
@@ -120,6 +123,7 @@ function comms(data){
                                 <img src="images/icon-edit.svg" alt="">
                                 Edit
                             </button>
+                            </div>
                         </div>`
                     }
                 })
@@ -258,7 +262,7 @@ function update(){
             
             function remove(polarity){
                 if(polarity == true){
-                    let parent = deleteBtn.parentElement;
+                    let parent = deleteBtn.parentElement.parentElement;
                     let grandpa = parent.parentElement;
                     let index = parentData.indexOf(person);
                     parentData.splice(index,1);
@@ -279,7 +283,7 @@ function update(){
                         //  THE EDIT BUTTON
     editBtns.forEach(editBtn =>{
         editBtn.addEventListener('click', ()=>{
-            let parent = editBtn.parentElement;
+            let parent = editBtn.parentElement.parentElement;
             let dataId = editBtn.getAttribute('data-id');
             let person = datas.comments.find(item => item.id == dataId);
             let para = parent.querySelector('.comment-para');
@@ -299,7 +303,6 @@ function update(){
             }
             let content = 
             `<div class="current-user-edit">
-                <img src="${datas.currentUser.user.image.png}" alt="" class="current-user-img">
                 <input class="current-user-input" value="${person.content}" placeholder="Edit"></input>
                 <input class="current-user-btn" value="UPDATE" type="submit"></input>
             </div>`;
@@ -344,7 +347,7 @@ function update(){
 
                 if(person == undefined){
                     for(comments of datas.comments){
-                        const replyExists = comments.replies.some(reply => reply.id === dataId);// Here we have to somehow find something that relates with parent and child
+                        let replyExists = comments.replies.some(reply => reply.replyingTo == comments.user.username);// Here we have to find the parent for the reply.
                         if (replyExists) {
                             person = comments; // Return the parent comment
                             console.log(comments);
