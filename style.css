@@ -101,10 +101,10 @@ button{
     grid-area:comment-para;
 }
 
-.current-user-reply{
+/*.current-user-reply{
     position: relative;
     top: 5rem;
-}
+}*/
 .modal{
     background-color: hsl(0, 0%, 100%);
     position: fixed;

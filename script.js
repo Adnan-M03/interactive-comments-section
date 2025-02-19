@@ -337,8 +337,9 @@ function update(){
                         //  THE REPLY BUTTON
     replyBtns.forEach(replyBtn =>{
         replyBtn.addEventListener('click', ()=>{
-            let parent = replyBtn.parentElement;
-            const clickedReply = parent.querySelector('.current-user-reply');
+            let parentSibling = replyBtn.parentElement.nextElementSibling;
+            let body = document.querySelector('body');
+            const clickedReply = document.querySelector('.current-user-reply');
             if(!clickedReply){
                 let dataId = replyBtn.getAttribute('data-id');
                 let person = datas.comments.find(item => item.id == dataId);//The object where i twick its data
@@ -372,15 +373,15 @@ function update(){
                 </div>`;
                 let div = document.createElement('div');
                 div.innerHTML = content;
-                parent.appendChild(div);
-                let me = parent.querySelector('.current-user-btn');
-                let input = parent.querySelector('.current-user-input');
+                body.insertBefore(div,parentSibling);
+                let replyConfirm = document.querySelector('.current-user-reply .current-user-btn');
+                let input = document.querySelector('.current-user-reply input');
                 input.focus();
-                me.addEventListener('click', ()=>{
+                replyConfirm.addEventListener('click', ()=>{
+                    if(input.value !== ''){
                     count += 1;
                     console.log(count);
-                    parent = replyBtn.parentElement; 
-                    parent.removeChild(div);
+                    body.removeChild(div);
                     let value = input.value;
                     // Class for creating the new object/new reply
                     class people{
@@ -405,6 +406,10 @@ function update(){
                     console.log(replier);
                     person.replies.push(replier);
                     comms(datas);
+                }else{
+                    input.style.border = '2px solid red';
+                    input.setAttribute('placeholder','Types atleast one character');
+                }
                 })
             }
         })
