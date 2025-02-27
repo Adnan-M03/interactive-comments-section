@@ -2,14 +2,14 @@ const fetchfiles = fetch('data.json');
 const body = document.querySelector('body');
 const para = document.getElementById('');
 const overlay = document.createElement('div');
+
 overlay.setAttribute('id', 'overlay');
 
 let count = 4;
 let scorePara;
 let datas;
 //let comments;
-
-
+ 
 function comms(data){
     let content = '';
     let currentUser = '';
@@ -133,7 +133,7 @@ function comms(data){
     currentUser =  
     `<div class="current-user">
         <img src="${data.currentUser.user.image.png}" alt="" class="current-user-img">
-        <input class="current-user-input" placeholder = 'Add a comment'></input>
+        <textarea class="current-user-input" placeholder = 'Add a comment'></textarea>
         <input class="current-user-btn" value="SEND" type="submit"></input>
     </div>`
 
@@ -169,8 +169,14 @@ function timeAgo(date) {
     if (interval >= 1) {
         return interval + " minute" + (interval === 1 ? "" : "s") + " ago";
     }
-    return Math.floor(seconds) + " second" + (seconds === 1 ? "" : "s") + " ago";
+    if(seconds < 1){ // Added this myself : Instead of it saying 0 seconds ago it says now
+        return 'now';
+    }else{
+        return Math.floor(seconds) + " second" + (seconds === 1 ? "" : "s") + " ago";
+    }
 }
+
+function updateTimeAgo(){}
 
 
             // Below function adds all the event listener's
@@ -195,16 +201,17 @@ function update(){
             let commentDate = new Date();
             count += 1;
             class people {
-                constructor(content,createdAt,id){
+                constructor(content,createdAt,id,date){
                     this.content = content;
                     this.createdAt = createdAt;
                     this.id = id;
+                    this.date = date;
                 }
                 replies = [];
                 score = 0;
                 user = datas.currentUser.user;
             }
-            let object = Object.assign({}, new people(value,timeAgo(commentDate),count));
+            let object = Object.assign({}, new people(value,timeAgo(commentDate),count,new Date()));
             datas.comments.push(object);
             comms(datas);
         }else{
@@ -244,10 +251,12 @@ function update(){
             // The below div is the modal for comfirmation of the deletion
             let div = document.createElement('div');
             div.setAttribute('class', 'modal');
-            div.innerHTML = `<h2 class="modal-header">Delete comment</h2>
+            div.innerHTML = `<h3 class="modal-header">Delete comment</h3>
                             <p class="modal-para">Are you sure you want to remove the comment? This will remove the comment and can't be undone.</p>
-                            <button class="modal-nobtn">NO, CANCEL</button>
-                            <button class="modal-yesbtn">YES, DELETE</button>`;
+                            <div class = "modal-btns">
+                                <button class="modal-nobtn">NO, CANCEL</button>
+                                <button class="modal-yesbtn">YES, DELETE</button>
+                            </div>`;
             document.body.appendChild(div);
             console.log(overlay)
             overlay.style.display = 'inline';
@@ -279,7 +288,16 @@ function update(){
     })
 
 
-
+    function disable(polarity,editBtn){
+        let deleteBtn = editBtn.previousElementSibling;
+        if(polarity == true){
+            editBtn.disabled = true;
+            deleteBtn.disabled = true;
+        }else{
+            editBtn.disabled = false;
+            deleteBtn.disabled = false;
+        }
+    }
                         //  THE EDIT BUTTON
     editBtns.forEach(editBtn =>{
         editBtn.addEventListener('click', ()=>{
@@ -303,15 +321,17 @@ function update(){
             }
             let content = 
             `<div class="current-user-edit">
-                <input class="current-user-input" value="${person.content}" placeholder="Edit"></input>
+                <textarea class="current-user-input" placeholder="Edit">${person.content}</textarea>
                 <input class="current-user-btn" value="UPDATE" type="submit"></input>
             </div>`;
             div.innerHTML = content;
             parent.insertBefore(div, para);// Good function for not messing up the placement of the elements
             parent.removeChild(para);
+            disable(true,editBtn);
 
             let input = parent.querySelector('.current-user-input');
             let btn = parent.querySelector('.current-user-btn');
+            input.focus();
             // Below i added a kind of error handling with placeholder and border change on the input
             btn.addEventListener('click', ()=>{
                 if(input.value !== ''){
@@ -323,6 +343,8 @@ function update(){
                     parent.insertBefore(para, div);
                     parent.removeChild(div);
                     person.content = `${value}`;
+                    disable(false,editBtn)
+
                 }else{
                     input.style.border = '2px solid red';
                     input.setAttribute('placeholder','Types atleast one character');
@@ -368,14 +390,14 @@ function update(){
                 let content = 
                 `<div class="current-user-reply">
                     <img src="${datas.currentUser.user.image.png}" alt="" class="current-user-img">
-                    <input class="current-user-input" placeholder="Reply"></input>
+                    <textarea class="current-user-input" placeholder="Reply"></textarea>
                     <input class="current-user-btn" value="REPLY" type="submit"></input>
                 </div>`;
                 let div = document.createElement('div');
                 div.innerHTML = content;
                 body.insertBefore(div,parentSibling);
                 let replyConfirm = document.querySelector('.current-user-reply .current-user-btn');
-                let input = document.querySelector('.current-user-reply input');
+                let input = document.querySelector('.current-user-reply textarea');
                 input.focus();
                 replyConfirm.addEventListener('click', ()=>{
                     if(input.value !== ''){
@@ -385,12 +407,13 @@ function update(){
                     let value = input.value;
                     // Class for creating the new object/new reply
                     class people{
-                        constructor(content,createdAt,score,replyingTo,id){
+                        constructor(content,createdAt,score,replyingTo,id,date){
                             this.content = content;
                             this.createdAt = createdAt;
                             this.score = score;
                             this.replyingTo = replyingTo;
                             this.id = id;
+                            this.date = date;
                         }
                         user = {
                             image: {
@@ -400,15 +423,14 @@ function update(){
                             username: "juliusomo"
                         }
                     }
-
                     let commentDate = new Date();
-                    let replier = Object.assign({}, new people(`${value}`,timeAgo(commentDate),0,user,count));
+                    let replier = Object.assign({}, new people(`${value}`,timeAgo(commentDate),0,user,count,new Date()));
                     console.log(replier);
                     person.replies.push(replier);
                     comms(datas);
                 }else{
                     input.style.border = '2px solid red';
-                    input.setAttribute('placeholder','Types atleast one character');
+                    input.setAttribute('placeholder','Type atleast one character');
                 }
                 })
             }
@@ -472,5 +494,25 @@ fetchfiles.then( response =>{
     datas.then(data =>{
         datas = data;
         comms(data);
+        setInterval(time,5000,timeAgo,datas);
     })
 }) 
+
+// Function to put into the interval to rewrite the createdAt time
+function time(timeAgo,datas){
+    let comments = datas.comments;
+    comments.forEach((comment) =>{
+        if(comment.date){
+            comment.createdAt = timeAgo(comment.date);
+        }else{
+            if(comment.replies.length > 0){
+                let replies = comment.replies;
+                replies.forEach((reply) =>{
+                    if(reply.date){
+                        reply.createdAt = timeAgo(reply.date);
+                    }
+                });
+            }
+        }
+    });
+}
