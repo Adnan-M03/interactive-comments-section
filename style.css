@@ -20,7 +20,16 @@
 button{
     cursor: pointer;
 }
-
+textarea:focus{
+    border: 1px solid hsl(212, 24%, 26%);
+    border-radius: 10px;
+    outline: none;
+}
+textarea{
+    resize: none;
+    overflow:auto;
+    border-radius: 10px;
+}
 .comment-container{
     position: relative;
     background-color: hsl(0, 0%, 100%);
@@ -38,6 +47,15 @@ button{
             background-color: hsl(238, 40%, 52%);
             color: hsl(0, 0%, 100%);
         }
+        & textarea{
+            border: 1px solid hsl(223, 19%, 93%);
+            border-radius: 10px;
+            width: 93%;
+            min-height:6rem;
+            padding:.5rem;
+            color:hsl(212, 24%, 26%);
+        }
+            
     }
 .vote-container~div {
         display: inline;
@@ -94,12 +112,27 @@ button{
     "user-date user-date"
     "comment-para comment-para"
     "vote-container reply-btn";
-    & .comment-para>b{
-        color: hsl(238, 40%, 52%);
-        font-weight: 700;
-    }
+        & .comment-para>b{
+            color: hsl(238, 40%, 52%);
+            font-weight: 700;
+        }
+        & textarea{
+            border: 1px solid hsl(223, 19%, 93%);
+            border-radius: 10px;
+            width: 93%;
+            min-height:6rem;
+            padding:.5rem;
+            color:hsl(212, 24%, 26%);
+        }
+        & .user-date + div{
+            grid-area: comment-para;
+        }
 }
-
+/*btns disabled*/
+div .edit-btn:disabled,div .delete-btn:disabled{
+    opacity: .5;
+    cursor:not-allowed;
+}
 .vote-container{
     display: inline-flex;
     background-color: hsl(228, 33%, 97%);
@@ -131,14 +164,29 @@ button{
             margin: 0 1rem;
             color: black;
         }
-       
+}
+.user-date + div{
+    grid-area: comment-para;
+        & .current-user-btn{
+            all: unset;
+            word-wrap: break-word;
+            background-color: hsl(238, 40%, 52%);
+            cursor: pointer;
+            text-align: center;
+            height:2rem;
+            color: hsl(0, 0%, 100%);
+            border-radius: 10px;
+            font-size: .9rem;
+            padding: 0 .5rem;
+            margin: .5rem 0;
+        }
 }
 .comment-para{
     grid-area:comment-para;
     line-height: 1.5;
     margin-bottom: 1rem;
 }
-.current-user-reply,.current-user{
+.current-user-reply{
     background-color: hsl(0, 0%, 100%);
     border-radius: 10px;
     margin: 1rem;
@@ -146,18 +194,20 @@ button{
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-       /* & .current-user-input{
-            border: 1px solid hsla(0, 0%, 0%, 0.438);
-            width: 65%;
-            min-height: 2rem;
-            padding:0 1rem 1rem 1rem;
-            grid-area: input;
-        }*/
-        
+        & textarea{
+            padding: .5rem;
+            height: 2.5rem;
+        }
         & input[type = "submit"]{
-            background-color: red;
+            all: unset;
+            background-color: hsl(238, 40%, 52%);
             cursor: pointer;
-            grid-area: btn;
+            text-align: center;
+            height:2rem;
+            color: hsl(0, 0%, 100%);
+            border-radius: 10px;
+            font-size: .9rem;
+            padding: 0 .5rem;
         }
         & img{
             width: 2.5rem;
@@ -165,6 +215,13 @@ button{
         }
 }
 .current-user{
+    background-color: hsl(0, 0%, 100%);
+    border-radius: 10px;
+    margin: 1rem;
+    padding: 1rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
     display: grid;
     row-gap: 1rem;
     grid-template-areas: "input input"
@@ -173,18 +230,19 @@ button{
         & .current-user-input{
             border: 1px solid hsl(223, 19%, 93%);
             border-radius: 10px;
-            min-height: 2rem;
-            padding:0 1rem 1rem 1rem;
+            min-height: 4rem;
+            padding:.5rem;
             grid-area: input;
+            color:hsl(212, 24%, 26%);
         }
+        /* probably make a single declaration for all button with this style */
         & input[type = "submit"]{
             all: unset;
-            word-wrap: break-word;
             background-color: hsl(238, 40%, 52%);
             cursor: pointer;
             grid-area: btn;
             text-align: center;
-            height:3.5rem;
+            height:2.5rem;
             color: hsl(0, 0%, 100%);
             border-radius: 10px;
         }
@@ -202,7 +260,45 @@ button{
     left: 50%;
     transform: translate(-50%,-50%);
     z-index: 2;
+    width: 92%;
+    /*height: 33%;*/
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-sizing:border-box;
+        & .modal-header{
+            margin-bottom: 1rem;
+            color: hsl(212, 24%, 26%);
+
+        }
+        & .modal-para{
+            margin-bottom: 1rem;
+            color: hsl(211, 10%, 45%);
+            line-height: 1.5;
+        }
 }
+.modal-btns{
+    display: flex;
+    justify-content: space-between;
+    font-weight: 450;
+    text-align: center;
+    cursor: pointer;
+    gap: .7rem;
+        & button{
+            all: unset;
+            height:2.9rem;
+            color: hsl(0, 0%, 100%);
+            border-radius: 10px;
+            font-size: .95rem;
+            width: 100%;
+        }
+        & .modal-yesbtn{
+            background-color: hsl(358, 79%, 66%);
+        }
+        & .modal-nobtn{
+            background-color: hsl(211, 10%, 45%);
+        }
+}
+
 #overlay{
     position: fixed;
     width: 100%;
