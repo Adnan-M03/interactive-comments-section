@@ -11,11 +11,19 @@
     padding: 0;
     font-family: 'vRubik';
 }
+html{
+    display: flex;
+    justify-content: center;
+}
  body{
     background-color: hsl(223, 19%, 93%);
-    height: fit-content;
-    padding: 0.1px;
+    padding:1.87rem 0;
     font-family: 'vRubik';
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 100%;
+    max-width:45.625rem;
 }
 button{
     cursor: pointer;
@@ -29,12 +37,15 @@ textarea{
     resize: none;
     overflow:auto;
     border-radius: 10px;
+    border: 1px solid hsl(223, 19%, 93%);
+    color:hsl(212, 24%, 26%);
 }
 .comment-container{
     position: relative;
     background-color: hsl(0, 0%, 100%);
     border-radius: 10px;
-    margin: 1rem;
+    max-width: 45rem;
+    margin: .5rem;
     padding: 1rem;
     display: grid;
     z-index:0;
@@ -102,9 +113,10 @@ textarea{
 .replies-container{
     position: relative;
     border-radius: 10px;
-    margin: 1rem;
+    max-width: 40rem;
+    margin: .5rem;
     padding: 1rem;
-    margin-left: 3rem;
+    margin-left: 2.5rem;
     background-color: hsl(0, 0%, 100%);
     display: grid;
     color: hsl(211, 10%, 45%);
@@ -117,8 +129,6 @@ textarea{
             font-weight: 700;
         }
         & textarea{
-            border: 1px solid hsl(223, 19%, 93%);
-            border-radius: 10px;
             width: 93%;
             min-height:6rem;
             padding:.5rem;
@@ -165,7 +175,7 @@ div .edit-btn:disabled,div .delete-btn:disabled{
             color: black;
         }
 }
-.user-date + div{
+.current-user-edit{
     grid-area: comment-para;
         & .current-user-btn{
             all: unset;
@@ -189,7 +199,9 @@ div .edit-btn:disabled,div .delete-btn:disabled{
 .current-user-reply{
     background-color: hsl(0, 0%, 100%);
     border-radius: 10px;
-    margin: 1rem;
+    width: 90%;
+    max-width: 45rem;
+    margin: .5rem;
     padding: 1rem;
     display: flex;
     align-items: flex-start;
@@ -217,7 +229,9 @@ div .edit-btn:disabled,div .delete-btn:disabled{
 .current-user{
     background-color: hsl(0, 0%, 100%);
     border-radius: 10px;
+    max-width: 730px;
     margin: 1rem;
+    margin-right: .5rem;
     padding: 1rem;
     display: flex;
     align-items: flex-start;
@@ -261,6 +275,7 @@ div .edit-btn:disabled,div .delete-btn:disabled{
     transform: translate(-50%,-50%);
     z-index: 2;
     width: 92%;
+    max-width: 25rem;
     /*height: 33%;*/
     border-radius: 10px;
     padding: 1.5rem;
@@ -268,7 +283,7 @@ div .edit-btn:disabled,div .delete-btn:disabled{
         & .modal-header{
             margin-bottom: 1rem;
             color: hsl(212, 24%, 26%);
-
+            
         }
         & .modal-para{
             margin-bottom: 1rem;
@@ -298,11 +313,113 @@ div .edit-btn:disabled,div .delete-btn:disabled{
             background-color: hsl(211, 10%, 45%);
         }
 }
+.current-user,.comment-container,.current-user-reply,.current-user{
+    box-sizing: border-box;
+    width: 97%;
+}
+.replies-container,#current-user-reply{
+    box-sizing: border-box;
+    width: 90%;
+}
+@media (min-width:820px){
+    body{
+        padding:3.5rem 0;
+    }
+    .comment-container,.replies-container{
+        grid-template-areas:
+    "vote-container user-date reply-btn"
+    "vote-container comment-para comment-para"
+    /*"vote-container reply-btn"*/;
+    grid-template-columns: min-content;
+    padding: 1.5rem;
+    row-gap: 1rem;
+    }
+    .comment-container{
+        box-sizing: border-box;
+        width: 100%;
+    }
+    .replies-container{
+        box-sizing: border-box;
+        width:94.1%;
+    }
+    .user-date{
+        margin-bottom: auto;
+    }
+    .vote-container{
+        flex-direction: column;
+        align-items: center;
+        width:1.8rem;
+        height: 5.5rem;
+        justify-content: space-between;
+        margin-right: 1.5rem;
+    }
+    .current-user-reply{
+        box-sizing: border-box;
+        width: 100%;
+        padding: 1.5rem;
+            & .current-user-input{
+                width:100%;
+                margin: 0 1rem;
+                height: 5.5rem;
+            }
+            & input[type = "submit"]{
+                width: 6.25rem;
+                height: 2.8rem;
+            }
+    }
+    .current-user-edit{
+        grid-area:comment-para;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        & .current-user-btn{
+            width: 5.25rem;
+            height: 2.8rem;
+            align-self: flex-end;
+        }
+        & textarea{
+            width: unset;
+        }
+    }
+    .current-user{
+        box-sizing: border-box;
+        width: 100%;
+        grid-template-areas:
+        "img input btn";
+        grid-template-columns: min-content 1fr min-content;
+            & .current-user-input {
+                margin: 0 1rem;
+                height: 5.5rem;
+            }
+            & img{
+                align-self:flex-start;
+            }
+            & input[type = "submit"]{
+                width: 6.25rem;
+                height: 2.8rem;
+            }
+    }
+    .modal{
+        padding: 2rem;
+            & .modal-header{
+                font-size: 1.5rem;
+                font-weight: 500;
+            }
+    }
+    .replies-container{
+        margin-left: 5rem;
+    }
+}
 
 #overlay{
     position: fixed;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background-color: hsla(0, 0%, 0%, 0.438);
     z-index: 1;
+}
+#current-user-reply{
+    box-sizing: border-box;
+    width: 94.1%;
+    max-width: 40rem;
 }

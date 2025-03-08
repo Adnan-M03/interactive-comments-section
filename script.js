@@ -1,5 +1,6 @@
 const fetchfiles = fetch('data.json');
 const body = document.querySelector('body');
+const html = document.querySelector('html');
 const para = document.getElementById('');
 const overlay = document.createElement('div');
 
@@ -13,6 +14,8 @@ let datas;
 function comms(data){
     let content = '';
     let currentUser = '';
+    let reply = '';
+    let value = '';
      
     data.comments.map(obj=>{
         if(obj.user.username !== 'juliusomo'){
@@ -73,7 +76,7 @@ function comms(data){
                 obj.replies.map( objects =>{
                     //if(objects.user.username !== 'juliusomo'){}else{}
                     if(objects.user.username !== 'juliusomo'){
-                        content += 
+                        value = 
                         `<div class="replies-container" data-reply-id = "${objects.id}">
                             <span class="user-date">
                                 <img src="${objects.user.image.png}" alt="">
@@ -94,9 +97,12 @@ function comms(data){
                                 <img src="images/icon-reply.svg" alt="">
                                 Reply
                             </button>
-                        </div>`
+                        </div>`;
+                        /*content += value;*/
+                        reply += value;
+                        content += value;
                     }else{
-                        content += 
+                        value =
                         `<div class="replies-container" data-reply-id = "${objects.id}">
                             <span class="user-date">
                                 <img src="${objects.user.image.png}" alt="">
@@ -124,7 +130,10 @@ function comms(data){
                                 Edit
                             </button>
                             </div>
-                        </div>`
+                            </div>`;
+                        /*content += value;*/
+                        reply += value;
+                        content += value;
                     }
                 })
             }
@@ -137,8 +146,13 @@ function comms(data){
         <input class="current-user-btn" value="SEND" type="submit"></input>
     </div>`
 
+    let replies = `<div class = "body-replies">
+    ${reply}
+    </div>
+    `
+    //console.log(replies);
     body.innerHTML = content + currentUser;
-    body.prepend(overlay);
+    html.prepend(overlay);
     overlay.style.display = 'none';
     update()
 }
@@ -252,7 +266,7 @@ function update(){
             let div = document.createElement('div');
             div.setAttribute('class', 'modal');
             div.innerHTML = `<h3 class="modal-header">Delete comment</h3>
-                            <p class="modal-para">Are you sure you want to remove the comment? This will remove the comment and can't be undone.</p>
+                            <p class="modal-para">Are you sure you want to delete this comment? This will remove the comment and can't be undone.</p>
                             <div class = "modal-btns">
                                 <button class="modal-nobtn">NO, CANCEL</button>
                                 <button class="modal-yesbtn">YES, DELETE</button>
@@ -320,11 +334,10 @@ function update(){
                 polarity = true;// --commented for myself-- for the case of being a direct send comment and not a reply
             }
             let content = 
-            `<div class="current-user-edit">
-                <textarea class="current-user-input" placeholder="Edit">${person.content}</textarea>
-                <input class="current-user-btn" value="UPDATE" type="submit"></input>
-            </div>`;
+            `<textarea class="current-user-input" placeholder="Edit">${person.content}</textarea>
+            <input class="current-user-btn" value="UPDATE" type="submit"></input>`;
             div.innerHTML = content;
+            div.setAttribute('class', 'current-user-edit')
             parent.insertBefore(div, para);// Good function for not messing up the placement of the elements
             parent.removeChild(para);
             disable(true,editBtn);
@@ -367,6 +380,7 @@ function update(){
                 let person = datas.comments.find(item => item.id == dataId);//The object where i twick its data
                 let user;
                 let personTwo;
+                let polarity = false;
 
                 if(person == undefined){
                     for(comments of datas.comments){
@@ -383,17 +397,18 @@ function update(){
                     }
                 // --commented for myself-- The user must be the one i am replying to regardless of were the reply is saved
                     user = personTwo.user.username;
+                    polarity = true;
                 }else{
                     user = person.user.username;
                 }
                 
                 let content = 
-                `<div class="current-user-reply">
-                    <img src="${datas.currentUser.user.image.png}" alt="" class="current-user-img">
-                    <textarea class="current-user-input" placeholder="Reply"></textarea>
-                    <input class="current-user-btn" value="REPLY" type="submit"></input>
-                </div>`;
+                `<img src="${datas.currentUser.user.image.png}" alt="" class="current-user-img">
+                <textarea class="current-user-input" placeholder="Reply"></textarea>
+                <input class="current-user-btn" value="REPLY" type="submit"></input>`;
                 let div = document.createElement('div');
+                div.setAttribute('class','current-user-reply');
+                polarity == true && div.setAttribute('id','current-user-reply'); //functionality for left margin of the reply div
                 div.innerHTML = content;
                 body.insertBefore(div,parentSibling);
                 let replyConfirm = document.querySelector('.current-user-reply .current-user-btn');
