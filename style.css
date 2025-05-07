@@ -24,6 +24,7 @@ html{
     align-items: flex-end;
     width: 100%;
     max-width:45.625rem;
+    touch-action:'manipulation';
 }
 button{
     cursor: pointer;
